@@ -1,0 +1,81 @@
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: #f6fafd;
+  color: #26334d;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 8vw;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(22, 91, 170, 0.08);
+}
+.logo { font-size: 1.6rem; font-weight: 700; color: #1a73e8;}
+.nav-links a {
+  margin-left: 1.5rem;
+  text-decoration: none;
+  font-weight: 500;
+  color: #333;
+  border-bottom: 2px solid transparent;
+  padding-bottom: 3px;
+  transition: color 0.2s, border-bottom 0.2s;
+}
+.nav-links a:hover,
+.nav-links a.active {
+  color: #1a73e8;
+  border-bottom: 2px solid #1a73e8;
+}
+.history-main {
+  max-width: 900px;
+  margin: 35px auto 0 auto;
+  padding: 30px 3vw;
+  background: #fff;
+  border-radius: 17px;
+  box-shadow: 0 6px 22px #b8eafc30;
+  min-height: 67vh;
+}
+h2 { color: #1a73e8; text-align:center; font-size:2.1rem;}
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 35px;
+  font-size: 1.08em;
+  border-radius: 7px;
+  overflow: hidden;
+  box-shadow: 0 1.5px 11px #e9f5fc38;
+}
+.history-table th, .history-table td {
+  padding: 12px 9px;
+  text-align: center;
+}
+.history-table th {
+  background: #eaf5ff;
+  color: #16588d;
+}
+.history-table tr { transition: background 0.14s;}
+.history-table tr.status-active { background: #d2fbe3;}
+.history-table tr.status-cancelled { background: #fee4e9;}
+.history-table tr.status-finished { background: #e5f2fb;}
+.badge {
+  padding: 7px 17px;
+  border-radius: 15px;
+  font-weight: 700;
+  font-size: 0.99em;
+  letter-spacing: 1px;
+  display: inline-block;
+}
+.badge.active { background: #44d98f; color: #15543b; }
+.badge.cancelled { background: #ffafbc; color: #a12b3f; }
+.badge.finished { background: #a5d7fa; color: #1a73e8; }
+.no-bookings-msg { text-align: center; color: #1864a6; background: #f4faff; padding: 33px 0; border-radius: 13px; margin:45px 0;}
+.no-bookings-msg a { color: #1a73e8; text-decoration: underline;}
+footer {
+  padding: 19px 0;
+  background: #f5f7fb;
+  text-align: center;
+  color: #555;
+  font-size: 1.03rem;
+  border-top: 2px solid #e0e6f0;
+}

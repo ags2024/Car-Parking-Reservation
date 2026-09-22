@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Booking History | PARKiT</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/booking.css') }}">
+  <style>
+    .history-main {max-width: 850px; margin: 38px auto; background: #fff; border-radius: 18px; padding: 25px 35px; box-shadow: 0 10px 28px #def0fb62;}
+    .history-table {width:100%; border-collapse: collapse;}
+    .history-table th, .history-table td {padding: 13px 8px; border-bottom: 1px solid #f0f4fa;}
+    .h-status.active {background: #dafce1; color: #14672b;}
+    .h-status.cancelled {background: #ffe3e3; color: #a90a1a;}
+    .h-status.completed {background: #e8e9fc; color: #214aaf;}
+    .r-btn {padding: 5px 14px; border-radius:7px; border:1px solid #22b9fa; background:#ebf8ff; color:#1a73e8; font-weight:700; cursor:pointer; text-decoration:none;}
+    .r-btn:hover {background:#bdefff; color:#1059be;}
+    .receipt-modal {display:none; position:fixed; z-index:14; top:0; left:0; width:100vw; height:100vh; background:rgba(35,41,55,0.21); }
+    .modal-content {background:#fff;padding:35px 33px;border-radius:14px;max-width:350px;margin:120px auto;}
+    .modal-content span {display:block; margin-bottom:7px;}
+    .close-r {position: absolute;top:21px;right:41px;font-size:2em;color:#666;cursor:pointer;}
+    .download-icon {margin-right:7px;}
+  </style>
+</head>
+<body>
+  <main class="history-main">
+    <h2>Your Booking History</h2>
+    <table class="history-table">
+      <tr>
+        <th>Date</th>
+        <th>Slot</th>
+        <th>Type</th>
+        <th>Start</th>
+        <th>End</th>
+        <th>Amount</th>
+        <th>Status</th>
+        <th>Refund</th>
+        <th>Receipt</th>
+      </tr>
+      {% for b in bookings %}
+      <tr>
+        <td>{{ b.created_at.strftime("%Y-%m-%d") if b.created_at else "" }}</td>
+        <td>{{ b.slot_id }}</td>
+        <td>{{ b.slot_type }}</td>
+        <td>{{ b.start_time[-5:] if b.start_time else "" }}</td>
+        <td>{{ b.end_time[-5:] if b.end_time else "" }}</td>
+        <td>₹{{ b.amount }}</td>
+        <td><span class="h-status {{ b.status }}">{{ b.status|capitalize }}</span></td>
+        <td>
+          {% if b.status == "cancelled" and b.refund_amt is defined %}
+            <span style="color:#34b333;">₹{{ b.refund_amt }}</span>
+          {% elif b.status == "active" %}
+            --
+          {% else %}
+            0
+          {% endif %}
+        </td>
+        <td>
+          <button class="r-btn" onclick="showReceipt({{ loop.index0 }})">Receipt</button>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% for b in bookings %}
+    <div class="receipt-modal" id="modal-{{ loop.index0 }}">
+      <div class="modal-content">
+        <div class="close-r" onclick="hideReceipt({{ loop.index0 }})">&times;</div>
+        <h3 style="margin-bottom:13px;">Booking Receipt</h3>
+        <span><b>Slot:</b> {{ b.slot_id }} ({{ b.slot_type }})</span>
+        <span><b>From:</b> {{ b.start_time }}</span>
+        <span><b>To:</b> {{ b.end_time }}</span>
+        <span><b>Status:</b> {{ b.status|capitalize }}</span>
+        <span><b>Amount Paid:</b> ₹{{ b.amount }}</span>
+        <span>
+          <b>Refunded:</b>
+          {% if b.status == "cancelled" and b.refund_amt is defined %}
+            <span style="color:#34b333;">₹{{ b.refund_amt }}</span>
+          {% elif b.status == "active" %}--
+          {% else %}0{% endif %}
+        </span>
+        <span><b>Date:</b> {{ b.created_at.strftime("%Y-%m-%d %H:%M") if b.created_at else "" }}</span>
+        <span><b>Booking ID:</b> {{ b._id }}</span>
+        <a href="{{ url_for('receipt_pdf', booking_id=b._id) }}" target="_blank" class="r-btn" style="margin-top:15px;">
+          <span class="download-icon">⬇️</span>Download PDF
+        </a>
+      </div>
+    </div>
+    {% endfor %}
+  </main>
+  <script>
+    function showReceipt(n) {
+      document.getElementById('modal-' + n).style.display = 'block';
+    }
+    function hideReceipt(n) {
+      document.getElementById('modal-' + n).style.display = 'none';
+    }
+    window.onclick = function(event) {
+      {% for b in bookings %}
+      var modal = document.getElementById('modal-{{ loop.index0 }}');
+      if (event.target === modal) { modal.style.display = "none"; }
+      {% endfor %}
+    }
+  </script>
+</body>
+</html>

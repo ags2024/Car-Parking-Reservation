@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Approve Recharges | PARKiT Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+  <style>
+    .recharge-table{width:90%;margin:25px auto 0 auto;background:#fff;border-radius:11px;
+      box-shadow:0 7px 30px #e7f2ff36;}
+    .recharge-table th, .recharge-table td {padding:13px;text-align:center;}
+    .recharge-table th {background:#eaf5ff;}
+    .btn-admin-yes, .btn-admin-no{padding:7px 16px;border-radius:7px;font-weight:700;border:none;cursor:pointer;}
+    .btn-admin-yes{background:#136066;color:#fff;}
+    .btn-admin-no{background:#eed9d9;color:#9f3b24;}
+    .badge-yes{background:#d2fbe3;color: #057d30;padding:2px 15px;border-radius:8px;}
+    .badge-no{background:#fce3e3;color:#af2323;padding:2px 15px;border-radius:8px;}
+    .badge-pend{background:#fffada;color:#7c7400;padding:2px 15px;border-radius:8px;}
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="logo">🅿️ PARKiT Admin</div>
+    <nav class="nav-links">
+      <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('manage_slots') }}">Slots</a>
+      <a href="{{ url_for('admin_logout') }}">Logout</a>
+    </nav>
+  </header>
+  <main class="dashboard-main">
+    <h2>Approve Wallet Recharges</h2>
+    <table class="recharge-table">
+      <tr>
+        <th>User</th>
+        <th>Amount</th>
+        <th>Method</th>
+        <th>Requested</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+      {% for req in requests %}
+      <tr>
+        <td>{{ req.username }}</td>
+        <td>₹{{ req.amount }}</td>
+        <td>{{ req.method }}</td>
+        <td>{{ req.created_at.strftime('%Y-%m-%d %H:%M') if req.created_at else ''}}</td>
+        <td>
+          {% if req.status == "pending" %}
+            <span class="badge-pend">Pending</span>
+          {% elif req.status == "approved" %}
+            <span class="badge-yes">Approved</span>
+          {% elif req.status == "declined" %}
+            <span class="badge-no">Declined</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if req.status == "pending" %}
+            <form method="POST" style="display:inline;">
+              <input type="hidden" name="req_id" value="{{ req._id }}">
+              <button class="btn-admin-yes" name="action" value="approve">Approve</button>
+            </form>
+            <form method="POST" style="display:inline;">
+              <input type="hidden" name="req_id" value="{{ req._id }}">
+              <button class="btn-admin-no" name="action" value="decline">Decline</button>
+            </form>
+          {% else %}
+            &mdash;
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </main>
+</body>
+</html>

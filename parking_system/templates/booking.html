@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PARKiT | Book Slot</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/booking.css') }}">
+</head>
+<body>
+  <header class="header">
+    <div class="logo">🚗 PARKiT</div>
+    <nav class="nav-links">
+      <a href="{{ url_for('home') }}">Home</a>
+      <a href="{{ url_for('user_dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('logout') }}">Logout</a>
+    </nav>
+  </header>
+
+  <main class="booking-main">
+    <h2>
+      <span class="gradient-text">Pick Your Parking Spot</span>
+    </h2>
+    <div class="slot-legend">
+      <span class="legend available-ev"><span class="icon">⚡</span>EV Available</span>
+      <span class="legend available-fuel"><span class="icon">🚙</span>Fuel Available</span>
+      <span class="legend booked"><span class="icon">🟥</span>Booked</span>
+      <span class="legend maintenance"><span class="icon">🛠️</span>Maintenance</span>
+    </div>
+
+    <!-- FILTER BAR (GET form) -->
+    <form method="get" class="booking-filters">
+      <label>Type:</label>
+      <select name="slot_type" onchange="this.form.submit()">
+        <option value="">All</option>
+        <option value="EV" {% if slot_type == "EV" %}selected{% endif %}>EV</option>
+        <option value="Fuel" {% if slot_type == "Fuel" %}selected{% endif %}>Fuel</option>
+      </select>
+      <label style="margin-left:20px;">
+        <input type="checkbox" name="show_buffer" value="1" {% if show_buffer %}checked{% endif %} onchange="this.form.submit()">
+        Show Slots in Buffer
+      </label>
+    </form>
+
+    <!-- MAIN BOOKING FORM -->
+    <form class="booking-form" method="POST">
+  <div class="parking-lot-grid">
+    {% for row in lot_rows %}
+      <div class="slot-row">
+        {% for slot in row %}
+          <label class="slot {{ slot.status }} {{ slot.type|lower }}">
+
+            {% if slot.status == "available" %}
+             <input id="slot_{{ slot.slot_id }}" type="radio" name="slot_id" value="{{ slot.slot_id }}" required>
+
+            {% elif slot.status == "buffer" %}
+              <input type="radio" disabled>
+              <div class="slot-buffer-timer">Wait {{ slot.buffer_remaining }}m</div>
+            {% endif %}
+            <span class="slot-icon">
+              {% if slot.status == "maintenance" %}🛠️
+              {% elif slot.status == "booked" %}🟥
+              {% elif slot.status == "buffer" %}⏳
+              {% else %}{{ "⚡" if slot.type == "EV" else "🚙" }}
+              {% endif %}
+            </span>
+            <span class="slot-id">{{ slot.slot_id }}</span>
+          </label>
+        {% endfor %}
+      </div>
+    {% endfor %}
+  </div>
+  <div class="date-time-group">
+    <div>
+      <label>From:</label>
+      <input type="datetime-local" name="start_time" min="{{ now }}" required>
+    </div>
+    <div>
+      <label>To:</label>
+      <input type="datetime-local" name="end_time" min="{{ now }}" required>
+    </div>
+  </div>
+  <button type="submit" class="btn-primary slot-book-btn">Book Selected Slot</button>
+</form>
+
+    <!-- END MAIN BOOKING FORM -->
+
+    {% if active_booking %}
+      <div class="active-booking-section">
+        <h3>🟢 Your Active Booking</h3>
+        <div class="booking-detail">
+          <span>🚦Slot: <b>{{ active_booking.slot_id }}</b> ({{ active_booking.slot_type }}) </span>
+          <span>🕒 {{ active_booking.start_time }} → {{ active_booking.end_time }}</span>
+          <span>💳 Amount: ₹{{ active_booking.amount }}</span>
+        </div>
+        <form method="POST" action="{{ url_for('cancel_booking', booking_id=active_booking._id) }}">
+          <button type="submit" class="btn-cancel">Cancel Booking</button>
+        </form>
+      </div>
+    {% endif %}
+
+    {% if message %}
+      <div class="booking-msg">{{ message }}</div>
+    {% endif %}
+
+  </main>
+  <footer>
+    <p>© 2025 <b>PARKiT</b> — The smartest way to park your car!</p>
+  </footer>
+</body>
+</html>

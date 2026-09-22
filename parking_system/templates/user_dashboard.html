@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PARKiT | User Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+</head>
+<body>
+  <header class="header">
+    <div class="logo">🚗 PARKiT</div>
+    <nav class="nav-links">
+      <a href="{{ url_for('home') }}">Home</a>
+      <a href="{{ url_for('user_dashboard') }}" class="active">Dashboard</a>
+      <a href="{{ url_for('logout') }}">Logout</a>
+    </nav>
+  </header>
+  <main class="dashboard-main fade-up">
+    <section class="user-summary">
+      <div class="profile-block">
+        <div class="profile-pic">
+          <img src="{{ url_for('static', filename='images/user-avatar.png') }}" alt="User Avatar">
+        </div>
+        <div>
+          <div class="user-id">User ID: <b>{{ user.user_id }}</b></div>
+          <div>Phone: {{ user.phone }}</div>
+        </div>
+      </div>
+      <div class="wallet-block">
+        <div class="wallet-icon">💰</div>
+        <div>
+          <div class="wallet-label">Wallet Balance</div>
+          <div class="wallet-amount">&#8377; {{ user.wallet_balance }}</div>
+        </div>
+        <a href="{{ url_for('wallet') }}" class="btn-primary recharge-btn">Recharge</a>
+      </div>
+      <div class="car-block">
+        <div class="car-icon">{% if user.car_type == 'EV' %}⚡{% else %}🚙{% endif %}</div>
+        <div>
+          <div class="car-label">Car Type</div>
+          <div class="car-type">{{ user.car_type }}</div>
+          <div class="car-number">{{ user.car_number }}</div>
+        </div>
+      </div>
+    </section>
+{% if notifications %}
+  <div class="notifications-area">
+    {% for note in notifications %}
+      <div class="reminder-msg">{{ note }}</div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+    <section class="dashboard-features">
+      <div class="dashboard-feature-card slot-booking bounce-in">
+        <img src="{{ url_for('static', filename='images/slot-selection.png') }}" alt="Book Slot">
+        <h3>Book Slot</h3>
+        <p>Choose available slots by time, type & location. Color-coded and real-time.</p>
+        <a href="{{ url_for('booking') }}" class="btn-secondary">Book Now</a>
+      </div>
+      <div class="dashboard-feature-card booking-history bounce-in delay-1">
+        <img src="{{ url_for('static', filename='images/booking-history.png') }}" alt="Booking History">
+        <h3>Your Bookings</h3>
+        {% if active_booking %}
+          <div class="booking-info">
+            <b>Active:</b> Slot #{{ active_booking.slot_id }}, {{ active_booking.start_time }} - {{ active_booking.end_time }} <br>
+            <a href="{{ url_for('cancel_booking', booking_id=active_booking._id) }}" class="btn-minor">Cancel</a>
+          </div>
+        {% else %}
+          <p>No active bookings.</p>
+        {% endif %}
+        <a href="{{ url_for('booking_history') }}" class="btn-secondary">View All</a>
+      </div>
+      <div class="dashboard-feature-card notifications bounce-in delay-2">
+        <img src="{{ url_for('static', filename='images/notification.png') }}" alt="Notifications">
+        <h3>Reminders</h3>
+        {% if notifications %}
+          <ul class="notification-list">
+            {% for note in notifications %}
+              <li>{{ note }}</li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>All clear! No notifications.</p>
+        {% endif %}
+      </div>
+      <div class="dashboard-feature-card chatbot bounce-in delay-3">
+        <img src="{{ url_for('static', filename='images/chatbot.png') }}" alt="Chatbot">
+        <h3>Assistant</h3>
+        <p>Check bookings, slot status & payments via live chatbot.</p>
+        <a href="{{ url_for('chatbot') }}" class="btn-secondary">Chat Now</a>
+      </div>
+    </section>
+
+    <section class="dashboard-actions">
+      <div class="directions-area">
+  <a href="{{ url_for('get_directions') }}" target="_blank" class="btn-directions">
+    <span class="maps-icon">📍</span> Get Directions to PARKiT
+  </a>
+</div>
+
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 <b>PARKiT</b> — The smartest way to park your car!</p>
+  </footer>
+</body>
+</html>

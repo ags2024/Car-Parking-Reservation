@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Wallet | PARKiT</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/wallet.css') }}">
+</head>
+<body>
+  <header class="header">
+    <div class="logo">🚗 PARKiT</div>
+    <nav class="nav-links">
+      <a href="{{ url_for('home') }}">Home</a>
+      <a href="{{ url_for('user_dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('booking') }}">Book Slot</a>
+      <a href="{{ url_for('logout') }}">Logout</a>
+    </nav>
+  </header>
+  <main class="wallet-main">
+    <h2>My Wallet</h2>
+    <div class="wallet-balance-card">
+      <div class="wallet-illustration">💰</div>
+      <div>
+        <div class="wallet-balance-label">Available Balance:</div>
+        <div class="wallet-balance-amount">₹{{ user.wallet_balance }}</div>
+      </div>
+    </div>
+    {% if pending_payment %}
+      <div class="wallet-msg warn">
+        <b>Pending Recharge:</b> ₹{{ pending_payment.amount }} via {{ pending_payment.method }}<br>
+        Status: <span class="badge {% if pending_payment.status=='pending' %}pending{% elif pending_payment.status=='approved' %}approved{% else %}rejected{% endif %}">{{ pending_payment.status|capitalize }}</span>
+        {% if pending_payment.status == 'rejected' %}
+          <div style="color: #cc2222; margin:8px 0 0 0;">Reason: {{ pending_payment.admin_remark }}</div>
+        {% endif %}
+      </div>
+    {% endif %}
+    <form class="recharge-form" method="POST" enctype="multipart/form-data">
+      <h3>Recharge Wallet</h3>
+      {% if msg %}
+        <div class="wallet-msg">{{ msg }}</div>
+      {% endif %}
+      <input type="number" name="amount" min="1" max="10000" placeholder="Enter amount" required>
+      <select name="payment_method" required>
+        <option value="">Select Payment Method</option>
+        <option value="UPI">UPI</option>
+        <option value="Card">Debit/Credit Card</option>
+        <option value="NetBanking">Net Banking</option>
+      </select>
+      <div id="upi-fields" style="display:none; text-align:center;">
+        <img src="{{ url_for('static', filename='images/qr-demo.jpg') }}" alt="UPI QR" style="width:170px; margin: 17px 0 8px; border-radius:14px;">
+        <div style="font-size:1.09em;color:#2575c0;">Scan to Pay by UPI</div>
+      </div>
+      <label id="txid-label" for="payment_id" style="display:none; margin-top:10px;">Paste Payment/Txn ID:</label>
+      <input id="payment_id" name="payment_id" placeholder="Enter payment or transaction ID" style="display:none;">
+      <button type="submit" class="btn-primary">Submit Payment</button>
+    </form>
+  </main>
+  <footer>
+    <p>© 2025 <b>PARKiT</b> — The smartest way to park your car!</p>
+  </footer>
+  <script>
+    const methodSel = document.querySelector('select[name="payment_method"]');
+    const upiFields = document.getElementById('upi-fields');
+    const txidLabel = document.getElementById('txid-label');
+    const txidInput = document.getElementById('payment_id');
+    methodSel && methodSel.addEventListener('change', function() {
+      if(this.value === "UPI"){
+        upiFields.style.display="block";
+        txidLabel.style.display=txidInput.style.display="block";
+      }else if(this.value===""){
+        upiFields.style.display=txidLabel.style.display=txidInput.style.display="none";
+      }else{
+        upiFields.style.display="none";
+        txidLabel.style.display=txidInput.style.display="block";
+      }
+    });
+  </script>
+</body>
+</html>

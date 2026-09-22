@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Slot Management | PARKiT Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+  <style>
+    body {background: #f6fafd;}
+    .dashboard-main {max-width: 1100px;}
+    .add-slot-form {background: #fff; padding: 22px 18px; border-radius: 12px; margin-bottom:2em; box-shadow: 0 0.5px 7px #daf2ff55;}
+    .add-slot-form input, .add-slot-form select {
+      margin: 0 10px 4px 0; padding: 7px 10px; border-radius: 7px; border: 1px solid #c2dbfa; font-size: 1em;
+    }
+    .add-slot-form button {background: #1a73e8; color:#fff; border:none; font-weight:600; border-radius: 7px; padding:7px 20px}
+    .msg-success {background: #eefee3; color:#228800; text-align:center; padding:10px 0; border-radius:7px; margin-bottom:12px;}
+    .msg-error {background: #fee3e3; color: #b22727; text-align:center; padding:10px 0; border-radius:7px; margin-bottom:12px;}
+    h2 { color: #1a73e8; text-align:center;}
+    .slot-grid-legend {text-align:center; margin-bottom:12px;}
+    .slot-legend-admin span {margin-right: 16px; padding:3px 12px; border-radius:9px; font-size:.96em; color:#233;}
+    .slot-legend-admin .ev {background: #d2fbe3;}
+    .slot-legend-admin .fuel {background: #e5f2fb;}
+    .slot-legend-admin .booked {background: #ffe3e3;}
+    .slot-legend-admin .maintenance {background: #fbeed2;}
+    /* Slot Grid Visuals */
+    .slot-grid-admin {margin:33px auto 20px auto; display: flex; flex-direction:column; gap:8px;width:max-content;}
+    .slot-row-admin {display:flex;gap:12px;}
+    .slot-admin-label {
+      display:flex; flex-direction:column; align-items:center; 
+      min-width:54px; min-height:54px; padding:5px 5px 3px 5px; margin-bottom:2px;
+      border-radius:11px; font-size:1.17em; font-weight:600;
+      box-shadow: 0 2px 7px #b2cde811;
+      border:2.5px solid #f4fbff; position:relati ve;
+      transition:box-shadow .12s, background .17s;
+      background:#fff; cursor:pointer;
+    }
+    .slot-admin-label.available.ev {background:#eafffa; border:2.5px solid #57e5ae;color:#0f9150;}
+    .slot-admin-label.available.fuel {background:#e7f2ff; border:2.5px solid #64c6ff;color:#1864a6;}
+    .slot-admin-label.booked {background:#ffe5e5;border:2.5px solid #eb3333;color:#a00000;}
+    .slot-admin-label.maintenance {background:#fff8e5;border:2.5px solid #ffd349;color:#988400;}
+
+    .slot-admin-label .slot-icon-admin {font-size:1.6em;margin-bottom:2px;}
+    .slot-admin-label .slot-id-admin {font-size:0.99em; font-weight:500;color:#4a7189;}
+    .slot-admin-actions {margin-top:4px;}
+    .slot-admin-actions button {margin:2px; font-size:.98em; padding:3px 10px; border-radius:7px; font-weight:500;}
+    .slot-admin-actions .book {background:#1a73e8;color:#fff;}
+    .slot-admin-actions .maint {background:#ffd649;color:#6b5700;}
+    .slot-admin-actions .act {background:#57e5ae;color:#1e5632;}
+    .slot-admin-actions .deact {background:#ffe3e3;color:#d63838;}
+    .slot-admin-actions .del {background:#e25959;color:#fff;}
+
+    .slot-table { width: 100%; border-collapse: collapse; margin-top: 30px; background: #fff;}
+    .slot-table th, .slot-table td { padding: 13px; text-align: center; }
+    .slot-table th { background: #eaf5ff; }
+    .slot-table tr:not(:first-child):hover { background: #ecf6ff; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="logo">🅿️ PARKiT Admin</div>
+    <nav class="nav-links">
+      <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('manage_slots') }}" class="active">Slots</a>
+      <a href="{{ url_for('admin_logout') }}">Logout</a>
+    </nav>
+  </header>
+  <main class="dashboard-main fade-up">
+    <h2>Slot Management</h2>
+    {% if msg %}<div class="msg-success">{{ msg }}</div>{% endif %}
+    {% if error %}<div class="msg-error">{{ error }}</div>{% endif %}
+
+    <form class="add-slot-form" method="post">
+      <b>Add New Slot:</b>
+      <input type="text" name="slot_id" placeholder="Slot ID" maxlength="6" required>
+      <select name="type">
+        <option value="EV">EV</option>
+        <option value="Fuel">Fuel</option>
+      </select>
+      <select name="status">
+        <option value="available">Available</option>
+        <option value="maintenance">Maintenance</option>
+      </select>
+      <button type="submit" name="add_slot">Add Slot</button>
+    </form>
+
+    <div class="slot-grid-legend">
+      <div class="slot-legend-admin">
+        <span class="ev">⚡ EV</span>
+        <span class="fuel">🚙 Fuel</span>
+        <span class="booked">🟥 Booked</span>
+        <span class="maintenance">🛠️ Maintenance</span>
+      </div>
+    </div>
+
+    <!-- Visual Grid -->
+    <div class="slot-grid-admin">
+      {% for row in slot_grid %}
+        <div class="slot-row-admin">
+          {% for slot in row %}
+            {% set slot_icon = "⚡" if slot.type == "EV" else "🚙" %}
+            <form method="post" style="margin:0;">
+              <input type="hidden" name="slot_id" value="{{ slot.slot_id }}">
+              <label class="slot-admin-label {{ slot.status }} {{ slot.type|lower }}" title="Slot #{{ slot.slot_id }} | {{ slot.type|capitalize }}">
+                <span class="slot-icon-admin">
+                  {% if slot.status == "maintenance" %}🛠️
+                  {% elif slot.status == "booked" %}🟥
+                  {% else %}{{ slot_icon }}
+                  {% endif %}
+                </span>
+                <span class="slot-id-admin">{{ slot.slot_id }}</span>
+                <div class="slot-admin-actions">
+                  {% if slot.status == 'available' %}
+                    <button class="deact" type="submit" name="toggle_status">Deactivate</button>
+                    <button class="maint" type="submit" name="set_maintenance">Maintenance</button>
+                  {% elif slot.status == 'booked' %}
+                    <button class="act" type="submit" name="toggle_status">Activate</button>
+                  {% elif slot.status == 'maintenance' %}
+                    <button class="act" type="submit" name="toggle_status">Activate</button>
+                  {% endif %}
+                  <button class="del" type="submit" name="delete_slot" onclick="return confirm('Delete this slot?');">Delete</button>
+                </div>
+              </label>
+            </form>
+          {% endfor %}
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Tabular View (Optional: remove if grid-only needed)-->
+    <table class="slot-table">
+      <tr>
+        <th>Slot ID</th>
+        <th>Type</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+      {% for slot in slots %}
+        <tr>
+          <td>{{ slot.slot_id }}</td>
+          <td>{{ slot.type }}</td>
+          <td>{{ slot.status }}</td>
+          <td>
+            <form style="display:inline" method="post">
+              <input type="hidden" name="slot_id" value="{{ slot.slot_id }}">
+              <button class="action-btn" type="submit" name="toggle_status">
+                {% if slot.status == 'available' %}Deactivate{% else %}Activate{% endif %}
+              </button>
+              <button class="action-btn" type="submit" name="set_maintenance"
+                {% if slot.status == 'maintenance' %}disabled{% endif %}>Maintenance</button>
+              <button class="action-btn" type="submit" name="delete_slot" style="background:#e25959;color:#fff;"
+                onclick="return confirm('Delete this slot?');">Delete</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
+  </main>
+</body>
+</html>

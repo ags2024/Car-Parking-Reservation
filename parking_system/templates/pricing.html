@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pricing & Cancellation Policy | PARKiT Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+  <style>
+    .policy-main {max-width:550px;margin:34px auto 0 auto;padding:32px 25px;border-radius:16px;background:#fff;
+      box-shadow:0 4px 21px #13637d0a;}
+    .policy-main h2 {color:#1485de;margin-bottom:19px;}
+    .policy-form input[type="number"]{
+      border:1px solid #b2cffc;border-radius:7px;padding:10px 9px;font-size:1.1em;width:79px;
+    }
+    .policy-form label {font-weight:600;color:#205188;margin-right:6px;}
+    .policy-form div {margin:13px 0;}
+    .policy-form button {background:#1a73e8;color:#fff;border:none;font-weight:700;
+      border-radius:11px;padding:10px 28px;text-align:center;margin-top:13px;}
+    .policy-success {color:#107400;background:#e0fbd6;border-radius:7px;padding:10px;text-align:center;margin-bottom:2em;}
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="logo">🅿️ PARKiT Admin</div>
+    <nav class="nav-links">
+      <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('manage_slots') }}">Slots</a>
+      <a href="{{ url_for('wallet_approvals') }}">Wallet Approvals</a>
+      <a href="{{ url_for('pricing') }}" class="active">Pricing/Policy</a>
+      <a href="{{ url_for('admin_logout') }}">Logout</a>
+    </nav>
+  </header>
+  <main class="policy-main">
+    <h2>Pricing & Cancellation Policy</h2>
+    {% if msg %}<div class="policy-success">{{ msg }}</div>{% endif %}
+    <form class="policy-form" method="POST">
+      <div>
+        <label>Hourly Rate (EV): </label>
+        <input type="number" name="rate_ev" min="0" max="500" value="{{ policy.rate_ev }}" required> ₹/hr
+      </div>
+      <div>
+        <label>Hourly Rate (Fuel): </label>
+        <input type="number" name="rate_fuel" min="0" max="500" value="{{ policy.rate_fuel }}" required> ₹/hr
+      </div>
+      <div>
+        <label>Cancel ≥ 3hr before: </label><input type="number" name="fee_low" min="0" max="100" value="{{ policy.fee_low }}" required> %
+        <label>Cancel < 3hr before: </label><input type="number" name="fee_high" min="0" max="100" value="{{ policy.fee_high }}" required> %
+      </div>
+      <button type="submit">Update Policy</button>
+    </form>
+    <div style="margin-top:28px;">
+      <b>Current Policy Preview:</b>
+      <ul>
+        <li>EV Slots: <span style="color:#107400;">₹{{ policy.rate_ev }}/hour</span></li>
+        <li>Fuel Slots: <span style="color:#ef900e;">₹{{ policy.rate_fuel }}/hour</span></li>
+        <li>Cancellation: <b>{{ policy.fee_low }}%</b> fee ≥3hr before start, <b>{{ policy.fee_high }}%</b> fee if <3hr before start.</li>
+      </ul>
+    </div>
+  </main>
+</body>
+</html>

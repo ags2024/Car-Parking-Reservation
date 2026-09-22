@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Caretakers | PARKiT Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family:'Poppins',sans-serif;background:#f7fafd;}
+    .ct-main {max-width:980px;margin:40px auto;background:#fff;box-shadow:0 7px 28px #a6ddee42;padding:37px 45px 39px 45px;border-radius:16px;}
+    h2{margin-bottom:23px;}
+    .msg{color:#178d2e;background:#e6ffe7;padding:10px 17px;margin-bottom:14px;border-radius:7px;}
+    .err{color:#a90c19;background:#ffe5e9;padding:10px 17px;margin-bottom:14px;border-radius:7px;}
+    .ct-table{width:100%;border-collapse:collapse;margin-top:22px;}
+    .ct-table th,.ct-table td{padding:12px 7px;border-bottom:1px solid #eaeaea;}
+    .slot-tag{display:inline-block;background:#fae5a4;color:#786e2f;padding:3px 8px;border-radius:6px;margin:0 2px 2px 0;font-size:0.92em;}
+    .status-act{color:#1aa123;background:#e7fede;padding:4px 10px;border-radius:8px;}
+    .status-inact{color:#b11b44;background:#ffe1e7;padding:4px 10px;border-radius:8px;}
+    input[type=text]{border-radius:7px;border:1px solid #b6d1fe;padding:9px 8px;margin-bottom:7px;}
+    .inline-form{display:inline;}
+    .form-bar{margin-top:14px;margin-bottom:31px;}
+    .btn-save{background:#23a0f2;color:#fff;padding:9px 22px;border:none;border-radius:8px;font-weight:700;margin-right:7px;cursor:pointer;}
+    .btn-del{background:#ff585a;color:#fff;padding:9px 17px;border:none;border-radius:8px;font-weight:700;cursor:pointer;}
+    .btn-edit{background:#fcc355;color:#4b3301;padding:7px 14px;border:none;border-radius:8px;font-weight:700;cursor:pointer;}
+  </style>
+</head>
+<body>
+  <div class="ct-main">
+    <h2>Caretaker Management</h2>
+    {% if msg %}<div class="msg">{{ msg }}</div>{% endif %}
+    {% if err %}<div class="err">{{ err }}</div>{% endif %}
+    <div class="form-bar">
+      <form method="POST">
+        <input type="hidden" name="action" value="add">
+        <input type="text" name="name" placeholder="Name" required style="width:140px;margin-right:8px;">
+        <input type="text" name="phone" placeholder="Phone" required style="width:120px;margin-right:8px;">
+        <input type="text" name="email" placeholder="Email" required style="width:170px;margin-right:8px;">
+
+        <input type="text" name="assigned_slots" placeholder="Slots (1,2,3...)" required style="width:160px;">
+        <input type="password" name="password" placeholder="Password" required style="width:120px;margin-right:8px;">
+
+        <button type="submit" class="btn-save">Add Caretaker</button>
+      </form>
+    </div>
+    <table class="ct-table">
+      <tr>
+        <th>Name</th><th>Phone</th><th>Email</th><th>Assigned Slots</th><th>Status</th><th>Actions</th>
+      </tr>
+      {% for c in caretakers %}
+      <tr>
+        <form method="POST" class="inline-form">
+          <input type="hidden" name="action" value="update">
+          <input type="hidden" name="caretaker_id" value="{{ c._id }}">
+          <td><input type="text" name="name" value="{{ c.name }}" required style="width:120px;"></td>
+          <td><input type="text" name="phone" value="{{ c.phone }}" required style="width:100px;"></td>
+          <td><input type="text" name="email" value="{{ c.email }}" required style="width:120px;"></td>
+          <td><input type="text" name="assigned_slots" value="{{ c.assigned_slots|join(',') }}" required style="width:100px;"></td>
+          <td>
+            <select name="status">
+              <option value="active" {% if c.status == "active" %}selected{% endif %}>Active</option>
+              <option value="inactive" {% if c.status == "inactive" %}selected{% endif %}>Inactive</option>
+            </select>
+          </td>
+          <td>
+            <button type="submit" class="btn-edit">Save</button>
+        </form>
+        <form method="POST" class="inline-form" style="display:inline;">
+          <input type="hidden" name="action" value="delete">
+          <input type="hidden" name="caretaker_id" value="{{ c._id }}">
+          <button type="submit" class="btn-del" onclick="return confirm('Delete caretaker?');">Delete</button>
+        </form>
+          </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+</body>
+</html>

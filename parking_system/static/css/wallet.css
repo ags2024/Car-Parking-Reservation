@@ -1,0 +1,104 @@
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: #f6fafd;
+  color: #26334d;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 8vw;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(22, 91, 170, 0.08);
+}
+.logo { font-size: 1.6rem; font-weight: 700; color: #1a73e8;}
+.nav-links a {
+  margin-left: 1.5rem;
+  text-decoration: none;
+  font-weight: 500;
+  color: #333;
+  border-bottom: 2px solid transparent;
+  padding-bottom: 3px;
+  transition: color 0.2s, border-bottom 0.2s;
+}
+.nav-links a:hover,
+.nav-links a.active {
+  color: #1a73e8;
+  border-bottom: 2px solid #1a73e8;
+}
+.wallet-main {
+  max-width: 500px;
+  margin: 35px auto 0 auto;
+  padding: 30px 5vw;
+  min-height: 72vh;
+}
+h2 { color: #1a73e8; text-align:center; font-size:2.1rem;}
+.wallet-balance-card {
+  background: #e7f2ff;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  border-radius: 23px;
+  margin: 28px 0 36px 0;
+  padding: 18px 25px;
+  box-shadow: 0 5px 18px #acd8f54c;
+}
+.wallet-illustration { font-size: 2.5rem; }
+.wallet-balance-label { color: #1589d6; font-size: 1.15em;}
+.wallet-balance-amount { color: #172e54; font-size: 1.75em; font-weight: 800;}
+.recharge-form {
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 6px 30px #e7f2ff47;
+  padding: 2em 2.3em 1.5em 2.3em;
+  max-width: 370px;
+  display: flex; flex-direction: column;
+  align-items: center;
+  gap: 19px;
+}
+.recharge-form h3 {margin:0;color:#1485de;}
+.recharge-form input[type="number"] {
+  width: 70%;
+  padding: 14px 9px;
+  font-size: 1.18em; border: 1px solid #b2cffc;
+  border-radius:7px; color:#173f77; font-weight:600;
+}
+.btn-primary {
+  background: linear-gradient(91deg, #1a73e8 40%, #40e0d0 100%);
+  color: #fff; font-weight: 700; font-size: 1.07em;
+  padding: 14px 33px; border-radius: 24px;
+  box-shadow: 0 7px 24px rgba(30,115,232,0.13);
+  border: none; cursor: pointer;
+  margin-top: 8px; letter-spacing: 1px;
+  transition: background 0.19s, box-shadow 0.13s;
+}
+.btn-primary:hover {
+  background: linear-gradient(91deg, #40e0d0 15%, #1a73e8 90%);
+  box-shadow: 0 15px 28px rgba(20,150,200,0.08);
+}
+.wallet-msg {
+  color: #0db458;
+  background: #d5fbe7;
+  border-radius: 6px;
+  font-size: 1.07em;
+  font-weight: 500;
+  margin-bottom: 6px;
+  padding: 8px 7px 8px 14px;
+}
+footer {
+  padding: 19px 0;
+  background: #f5f7fb;
+  text-align: center;
+  color: #555;
+  font-size: 1.03rem;
+  border-top: 2px solid #e0e6f0;
+}
+.pending-list ul { list-style: none; padding: 0; margin: 0;}
+.pending-list li { margin: 7px 0; padding: 9px 0; border-bottom: 1px solid #eaeaea; font-size: 1.08em;}
+.badge.pending { background: #fffada; color: #7c7400; padding: 2px 13px; border-radius: 14px; border: none; font-weight: 600;}
+.wallet-msg.warn { background: #fff7e2; color: #b98b04 !important; border-left:5px solid #ffda6b;}
+.wallet-msg .badge.pending {background: #ffe49a; color: #b9980e;}
+.wallet-msg .badge.approved {background: #d5fbe7; color: #198a43;}
+.wallet-msg .badge.rejected {background: #ffb8b8; color: #c41b1b;}

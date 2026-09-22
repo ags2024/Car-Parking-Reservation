@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Slot Analytics | PARKiT Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <nav><a href="{{ url_for('home') }}">Home</a></nav>
+
+  <style>
+    body { font-family: 'Poppins', sans-serif; background: #f0f5ff; }
+    .analytic-main { max-width: 950px; margin: 38px auto 0 auto; background: #fff; border-radius:18px; padding:32px 42px; box-shadow:0 4px 18px #bee3fd55;}
+    .stats-table { margin-top:33px; width:100%; border-collapse: collapse; }
+    .stats-table th, .stats-table td { padding:11px 9px; border-bottom: 1px solid #e7e8ff; }
+    .pie-ct, .line-ct { display: flex; justify-content: center; align-items: center; margin:19px 0 19px 0;}
+    .legendBox {margin-top: 9px; margin-left: 3px; font-size: 0.97em;}
+    .legendDot {display:inline-block;width:13px;height:13px;border-radius:50%;margin-right:8px;}
+    .date-bar {margin: 17px 0 12px 0; text-align:center;}
+    .csv-btn {padding: 8px 22px; border-radius:9px; background:#e9f6fa; border:1px solid #1a73e8; color:#1673e0; font-weight:700; text-decoration:none; margin-bottom:19px; display:inline-block;}
+    .csv-btn:hover { background:#aeeaff; color:#1a73e8; }
+  </style>
+</head>
+<body>
+  
+  <div class="analytic-main">
+    <h2>📊 Slot Analytics Dashboard</h2>
+    <div class="date-bar">
+      <form method="get" style="display:inline;">
+        <label for="start">From:</label> <input type="date" id="start" name="start" value="{{ start }}">
+        <label for="end" style="margin-left:13px;">To:</label> <input type="date" id="end" name="end" value="{{ end }}">
+        <button type="submit" style="margin-left:20px;">Go</button>
+      </form>
+      <a href="{{ booking_csv_url }}" class="csv-btn" target="_blank">⬇️ Export CSV</a>
+    </div>
+
+    <div class="pie-ct">
+      <canvas id="statusPie" width="250" height="250"></canvas>
+      <div class="legendBox">
+        <div><span class="legendDot" style="background:#1a73e8;"></span>Active</div>
+        <div><span class="legendDot" style="background:#fc4c51;"></span>Cancelled</div>
+        <div><span class="legendDot" style="background:#7c5cff;"></span>Completed</div>
+      </div>
+    </div>
+    <div class="line-ct" style="margin-bottom:25px;">
+      <canvas id="trendLine" width="700" height="260"></canvas>
+    </div>
+    <table class="stats-table">
+      <tr>
+        <th>Active</th>
+        <th>Cancelled</th>
+        <th>Completed</th>
+        <th>EV Slots Booked</th>
+        <th>Fuel Slots Booked</th>
+      </tr>
+      <tr>
+        <td>{{ status_count.active }}</td>
+        <td>{{ status_count.cancelled }}</td>
+        <td>{{ status_count.completed }}</td>
+        <td>{{ slot_type_count.EV }}</td>
+        <td>{{ slot_type_count.Fuel }}</td>
+      </tr>
+    </table>
+  </div>
+  <script>
+    // Pie chart (status count)
+    new Chart(document.getElementById('statusPie').getContext('2d'),{
+      type:'pie',
+      data:{
+        labels:['Active','Cancelled','Completed'],
+        datasets:[{
+          data:[{{status_count.active}},{{status_count.cancelled}},{{status_count.completed}}],
+          backgroundColor:['#1a73e8','#fc4c51','#7c5cff'],
+          borderWidth:2
+        }]
+      },
+      options: { plugins: { legend: { display: false } } }
+    });
+    // Line chart (trend)
+    new Chart(document.getElementById('trendLine').getContext('2d'),{
+      type:'line',
+      data:{
+        labels: {{ date_list|safe }},
+        datasets:[{
+          label:'Bookings per Day',
+          data: {{ daily_counts|safe }},
+          borderColor:'#007be0', backgroundColor:'#c7e7ff99',fill:true,
+          tension: 0.27, pointRadius:5
+        }]
+      },
+      options: {
+        scales: {
+          y: { beginAtZero:true, stepSize:1 }
+        }
+      }
+    })
+  </script>
+</body>
+</html>

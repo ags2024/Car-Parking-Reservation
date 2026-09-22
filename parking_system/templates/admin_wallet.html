@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Wallet Approvals | PARKiT Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+  <style>
+    .wallet-table {width:96%;margin:30px auto;background:#fff;border-radius:11px;}
+    .wallet-table th, .wallet-table td {text-align:center;padding:11px;}
+    .wallet-table tr:nth-child(even){background:#f6fafd;}
+    .wallet-table th{background:#eaf5ff;color:#16588d;}
+    .action-btn {padding:7px 15px;border-radius:8px;font-weight:600;}
+    .approve {background:#74e268;color:#206b40;}
+    .reject {background:#ffbfc1;color:#d72739;}
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="logo">🅿️ PARKiT Admin</div>
+    <nav class="nav-links">
+      <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('manage_slots') }}">Slots</a>
+      <a href="{{ url_for('wallet_approvals') }}" class="active">Wallet Approvals</a>
+      <a href="{{ url_for('admin_logout') }}">Logout</a>
+    </nav>
+  </header>
+  <main class="dashboard-main fade-up">
+    <h2>Approve User Wallet Recharges</h2>
+    {% if msg %}<div class="msg-success">{{ msg }}</div>{% endif %}
+    <table class="wallet-table">
+      <tr>
+        <th>User ID</th>
+        <th>Amount</th>
+        <th>Method</th>
+        <th>Txn/Payment ID</th>
+        <th>Status</th>
+        <th>Actions / Remark</th>
+      </tr>
+      {% for p in payments %}
+      <tr>
+        <td>{{ p.user_id }}</td>
+        <td>₹{{ p.amount }}</td>
+        <td>{{ p.method }}</td>
+        <td>{{ p.payment_id }}</td>
+        <td>{{ p.status }}</td>
+        <td>
+          {% if p.status == 'pending' %}
+          <form style="display:inline-block;" method="post">
+            <input type="hidden" name="payment_id" value="{{ p._id }}">
+            <button name="action" value="approve" class="action-btn approve">Approve</button>
+            <button name="action" value="reject" class="action-btn reject">Reject</button>
+            <input type="text" name="admin_remark" placeholder="Remark (if reject)" style="margin-left:7px;">
+          </form>
+          {% elif p.status == 'approved' %}
+            <span style="color:#198a43">Approved ✔</span>
+          {% else %}
+            <span style="color:#d72739">Rejected ✖<br> ({{ p.admin_remark }})</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </main>
+</body>
+</html>

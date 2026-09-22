@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PARKiT Admin | Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+</head>
+<body>
+  <header class="header">
+    <div class="logo">🅿️ PARKiT Admin</div>
+    <nav class="nav-links">
+      <a href="{{ url_for('admin_dashboard') }}" class="active">Dashboard</a>
+      <a href="{{ url_for('manage_slots') }}">Slots</a>
+      <a href="{{ url_for('wallet_approvals') }}">Wallet Approvals</a>
+      <!-- Uncomment below as you add: -->
+      <!-- <a href="{{ url_for('manage_lots') }}">Lots</a> -->
+      <!-- <a href="{{ url_for('manage_caretakers') }}">Caretakers</a> -->
+      <!-- <a href="{{ url_for('pricing') }}">Pricing/Policy</a> -->
+      <a href="{{ url_for('admin_logout') }}">Logout</a>
+    </nav>
+  </header>
+  <main class="dashboard-main fade-up">
+    <h2>Admin Dashboard</h2>
+    <div class="admin-cards-row">
+      <div class="admin-card">
+        <div class="admin-label">Total Slots</div>
+        <div class="admin-value">{{ stats.total_slots }}</div>
+      </div>
+      <div class="admin-card">
+        <div class="admin-label">Booked</div>
+        <div class="admin-value booked">{{ stats.booked_slots }}</div>
+      </div>
+      <div class="admin-card">
+        <div class="admin-label">EV Available</div>
+        <div class="admin-value ev">{{ stats.ev_available }}</div>
+      </div>
+      <div class="admin-card">
+        <div class="admin-label">Fuel Available</div>
+        <div class="admin-value fuel">{{ stats.fuel_available }}</div>
+      </div>
+    </div>
+
+    <div class="quick-actions">
+      <a href="{{ url_for('manage_slots') }}" class="btn-secondary">Manage Slots</a>
+      <a href="{{ url_for('wallet_approvals') }}" class="btn-secondary">Wallet Approvals</a>
+      <!-- Add quick links here as you build more modules -->
+      <a href="{{ url_for('manage_lots') }}" class="btn-secondary">Manage Lots</a>
+      <a href="{{ url_for('admin_analytics') }}" class="btn-secondary">Slot Analytics</a>
+      <a href="{{ url_for('admin_notifications') }}" class="btn-secondary">admin_notifications</a>
+      <a href="{{ url_for('manage_caretakers') }}" class="btn-secondary">Caretaker Panel</a>
+      <!-- <a href="{{ url_for('pricing') }}" class="btn-secondary">Pricing & Policy</a> -->
+    </div>
+
+    <section style="margin-top:32px;">
+      <h3 style="color:#1a73e8;">Management Overview</h3>
+      <ul style="font-size:1.1em;line-height:1.7;">
+        <li>🔹 <b>Approve Wallet Recharges:</b> Review and approve/reject all user payment requests.</li>
+        <li>🔹 <b>Slots Control:</b> Add, delete, toggle, or maintain any slot with a visual grid and table.</li>
+        <li>🔹 <b>See Up-to-date Analytics, Add Future Panels for:</b> Lot Management, Pricing, Caretaker Assignments, and more.</li>
+      </ul>
+    </section>
+  </main>
+  <footer>
+    <p>© 2025 <b>PARKiT</b> Admin — Smart parking, smart management!</p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,185 @@
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: #f8fbff;
+  color: #222;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 8vw;
+  background: #fff;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+.logo {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a73e8;
+}
+.nav-links a {
+  margin-left: 2rem;
+  text-decoration: none;
+  font-weight: 500;
+  color: #333;
+  border-bottom: 2px solid transparent;
+  padding-bottom: 3px;
+  transition: color 0.2s, border-bottom-color 0.2s;
+}
+.nav-links a:hover,
+.nav-links a.active {
+  color: #1a73e8;
+  border-bottom: 2px solid #1a73e8;
+}
+
+/* Main Dashboard Styles */
+.dashboard-main {
+  padding: 44px 8vw 28px 8vw;
+}
+.user-summary, .admin-summary {
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 7px 25px rgba(46,104,248,0.10);
+  padding: 27px;
+  display: flex;
+  align-items: center;
+  gap: 35px;
+  justify-content: space-between;
+  margin-bottom: 54px;
+}
+.profile-block, .wallet-block, .car-block {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 180px;
+}
+.profile-pic img { width: 56px; border-radius: 50%; background: #e6eefb; }
+.wallet-icon { font-size: 2.1rem; }
+.wallet-label { color: #888; font-size: 0.98em;}
+.wallet-amount { font-size: 1.3em; font-weight: 700;}
+.car-icon { font-size: 2.1rem; }
+.car-type { font-weight: 500 }
+.btn-primary, .btn-secondary {
+  background: #1a73e8;
+  color: #fff;
+  padding: 9px 23px;
+  border-radius: 26px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background .19s, transform .1s;
+  border: none;
+  display: inline-block;
+  margin-top: 6px;
+}
+.btn-primary { background: #1a73e8;}
+.btn-secondary { background: #238ff9;}
+.btn-primary:hover,.btn-secondary:hover {
+  background: #0c56c4;
+  transform: translateY(-2px) scale(1.04);
+}
+.btn-minor {
+  background: #fff2e1;
+  color: #d9840e;
+  padding: 6px 13px;
+  border-radius: 13px;
+  font-size: 0.94em;
+  text-decoration: none;
+  margin-left: 7px;
+}
+.btn-map {
+  display: inline-block;
+  color: #187bd1;
+  background: #eaf5ff;
+  padding: 11px 27px;
+  font-weight: 600;
+  border-radius: 18px;
+  margin-top: 13px;
+  border: none;
+  font-size: 1.07em;
+  transition: background 0.2s;
+}
+.btn-map:hover { background: #c4e2ff; color: #195bb7;}
+
+/* Dashboard Features Cards */
+.dashboard-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(270px,1fr));
+  gap: 25px;
+  margin-bottom: 28px;
+}
+.dashboard-feature-card, .admin-feature-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.07);
+  padding: 2.2em 1.5em 1.5em;
+  text-align: center;
+  position: relative;
+  transition: transform 0.3s, box-shadow 0.3s;
+  opacity: 0;
+  animation: bounceIn 0.9s forwards;
+}
+.dashboard-feature-card img, .admin-feature-card img {
+  height: 63px;
+  margin-bottom: 15px;
+}
+.dashboard-feature-card h3, .admin-feature-card h3 {
+  color: #1a73e8;
+  margin-bottom: 7px;
+  font-size: 1.19em;
+}
+.booking-info {font-size: 0.97em;margin-bottom: 8px;}
+.notification-list {list-style:square inside;color: #1976d2;margin:0;padding-left:8px}
+.bounce-in { animation-delay: 0s; }
+.bounce-in.delay-1 { animation-delay: 0.20s; }
+.bounce-in.delay-2 { animation-delay: 0.40s; }
+.bounce-in.delay-3 { animation-delay: 0.60s; }
+@keyframes bounceIn {
+  from { opacity: 0; transform: translateY(40px) scale(0.97);}
+  to   { opacity: 1; transform: translateY(0) scale(1);}
+}
+.dashboard-actions { text-align:center;margin-top:2em;}
+/* Admin summary blocks */
+.admin-cards-row {
+  display: flex;
+  gap: 24px;
+  margin: 20px 0;
+}
+.admin-card {
+  background: #eaf5ff;
+  border-radius: 8px;
+  padding: 1.1em 1.3em;
+  text-align: center;
+  min-width: 100px;
+  font-weight: 600;
+}
+.admin-value { font-size: 1.4em; color:#187bd1;}
+.admin-card .booked { color: #eb5769;}
+.admin-card .ev { color: #1bd01b;}
+.admin-card .fuel { color: #ec9008;}
+.quick-actions a {margin-right:13px;}
+footer {
+  padding: 25px 0;
+  background: #f5f7fb;
+  text-align: center;
+  color: #555;
+  font-size: 0.96rem;
+  border-top: 2px solid #e0e6f0;
+}
+.fade-up {opacity: 0;animation: dashFadeUp 1.1s forwards;}
+@keyframes dashFadeUp { to {opacity: 1;}}
+.notifications-area {margin-top:13px;}
+.reminder-msg {
+  background: #fff7e3;
+  color: #e2991a;
+  border-left: 5px solid #ffd158;
+  font-weight: 600;
+  font-size: 1.04em;
+  padding: 13px 17px;
+  border-radius: 11px;
+  margin-bottom: 12px;
+  letter-spacing: .01em;
+  box-shadow: 0 1px 10px #fbeac177;
+}

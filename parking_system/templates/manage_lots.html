@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Parking Lot Location | PARKiT Admin</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+  <style>
+    .lot-form-main {max-width:500px;margin:36px auto;padding:35px 28px;border-radius:17px;background:#fff;
+      box-shadow:0 4px 21px #007be01d;}
+    .lot-form-main h2 {color:#1a73e8;margin-bottom:19px;}
+    .lot-form label{font-weight:600;margin-bottom:4px;}
+    .lot-form input {border:1px solid #b2cffc;border-radius:8px;padding:11px 9px;font-size:1.05em;width:100%;margin-bottom:14px;}
+    .lot-form button{background:#1787f1;color:#fff;padding:10px 30px;font-size:1.1em;border:none;border-radius:9px;margin-top:12px;font-weight:700;}
+    .lot-loc-preview {margin:18px 0;color:#3b4450;}
+    .msg-success {background:#e4ffec;color:#11753e;text-align:center;padding:11px;border-radius:7px;}
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="logo">🅿️ PARKiT Admin</div>
+    <nav class="nav-links">
+      <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('manage_lots') }}" class="active">Lot Location</a>
+      <a href="{{ url_for('admin_logout') }}">Logout</a>
+    </nav>
+  </header>
+  <main class="lot-form-main">
+    <h2>Parking Lot Location</h2>
+    {% if msg %}<div class="msg-success">{{ msg }}</div>{% endif %}
+    <form method="POST" class="lot-form">
+      <label for="name">Lot Name/Address:</label>
+      <input type="text" id="name" name="name" value="{{ lot['name'] if lot else '' }}" required>
+
+      <label for="latitude">Latitude:</label>
+      <input type="number" id="latitude" name="latitude" step="any" value="{{ lot['latitude'] if lot else '' }}" required>
+
+      <label for="longitude">Longitude:</label>
+      <input type="number" id="longitude" name="longitude" step="any" value="{{ lot['longitude'] if lot else '' }}" required>
+
+      <button type="submit">Save Location</button>
+    </form>
+    {% if lot %}
+      <div class="lot-loc-preview">
+        <b>Current Location:</b><br>{{ lot.name }}<br>({{ lot.latitude }}, {{ lot.longitude }})
+      </div>
+    {% endif %}
+  </main>
+</body>
+</html>
